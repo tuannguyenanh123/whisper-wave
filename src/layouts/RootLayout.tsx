@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import { Outlet } from 'react-router-dom'
 import Sidebar from '../components/navigation/Sidebar'
 import { useProfileStore } from '../stores/profileStore'
@@ -17,6 +17,7 @@ const RootLayout = () => {
 
     useEffect(() => {
         if (!isSignedIn) setProfile(null)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isSignedIn]);
 
     useEffect(() => {
@@ -40,6 +41,7 @@ const RootLayout = () => {
         }
         if (profile?.id) return;
         createProfilefn()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [session?.user, profile?.id]);
     return (
         <div><Sidebar /><Outlet /></div>

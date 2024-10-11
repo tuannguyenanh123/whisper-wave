@@ -1,5 +1,4 @@
 import { UserButton } from '@clerk/clerk-react'
-import React from 'react'
 import styles from './sidebar.module.css'
 import { Button, Center, Stack, useMantineColorScheme } from '@mantine/core'
 import { IconArrowsJoin, IconMoon, IconPlus, IconSun } from '@tabler/icons-react';

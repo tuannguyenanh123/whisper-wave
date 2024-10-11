@@ -1,4 +1,4 @@
-import { Button, Center, Flex, Group, Image, Modal, rem, Stack, Text, TextInput } from "@mantine/core";
+import { Button, Flex, Image, Modal, rem, Stack, Text, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { Dropzone, DropzoneProps, IMAGE_MIME_TYPE } from "@mantine/dropzone";
 import useModal from "../../hooks/useModal";
@@ -7,9 +7,9 @@ import { IconUpload, IconX } from "@tabler/icons-react";
 import classes from './createServerModal.module.css'
 
 const CreateServerModal = () => {
-  const [file, setFile] = useState<File | null>(null)
+  const [, setFile] = useState<File | null>(null)
   const [imagePreview, setImagePreview] = useState<string | null>(null)
-  const { closeModal, isOpen, openModal } = useModal("CreateServer");
+  const { closeModal, isOpen } = useModal("CreateServer");
   const form = useForm({
     initialValues: {
       name: "",
