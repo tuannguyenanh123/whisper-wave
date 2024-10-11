@@ -2,11 +2,14 @@ import React, { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import '@mantine/core/styles.css';
+import { ApolloProvider } from '@apollo/client';
 import { MantineProvider } from '@mantine/core';
 import { SignedIn, SignedOut, ClerkProvider, RedirectToSignIn } from '@clerk/clerk-react'
-import { BrowserRouter, Route, Routes, useNavigate } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import RootLayout from './layouts/RootLayout.tsx';
 import Homepage from './pages/Homepage.tsx';
+import CreateServerModal from './components/modals/CreateServerModal.tsx';
+import client from './apolloClient.ts';
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
 
@@ -28,13 +31,13 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 };
 
 const RouterComponent = () => {
-  const navigate = useNavigate();
   return (
     <ClerkProvider publishableKey={PUBLISHABLE_KEY} afterSignOutUrl="/">
       <Routes>
         <Route path='' element={<RootLayout />}>
           <Route index element={
             <ProtectedRoute>
+              <CreateServerModal />
               <Homepage />
             </ProtectedRoute>
           }>
@@ -47,11 +50,13 @@ const RouterComponent = () => {
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <MantineProvider>
-      <BrowserRouter>
-        <RouterComponent />
-      </BrowserRouter>
-    </MantineProvider>
+    <ApolloProvider client={client}>
+      <MantineProvider defaultColorScheme="dark">
+        <BrowserRouter>
+          <RouterComponent />
+        </BrowserRouter>
+      </MantineProvider>
+    </ApolloProvider>
   </StrictMode>,
 )
 
