@@ -30,6 +30,7 @@ const uploadLink = createUploadLink({
 const errorLink = onError(({ graphQLErrors, networkError }) => {
   if (graphQLErrors) {
     graphQLErrors.map(({ message, locations, path }) => {
+      console.log("🚀 ~ graphQLErrors.map ~ locations:", locations);
       console.log(
         `graphql error -> message: ${message}, locations: ${locations}, path: ${path}}`
       );

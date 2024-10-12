@@ -3,7 +3,7 @@
   height: 100vh;
   inset: 0;
   position: fixed;
-  padding: var(--mantine-spacing-md);
+  padding: var(--mantine-spacing-xs);
   display: flex;
   flex-direction: column;
   justify-content: space-between;

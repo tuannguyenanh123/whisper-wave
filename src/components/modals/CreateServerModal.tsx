@@ -5,12 +5,18 @@ import useModal from "../../hooks/useModal";
 import { useState } from "react";
 import { IconUpload, IconX } from "@tabler/icons-react";
 import classes from './createServerModal.module.css'
+import { useMutation } from "@apollo/client";
+import { CREATE_SERVER } from "../../graphql/mutations/server/CreateServer";
+import { useProfileStore } from "../../stores/profileStore";
+import { CreateServerMutation, CreateServerMutationVariables } from "../../gql/graphql";
 
 const CreateServerModal = () => {
-  const [, setFile] = useState<File | null>(null)
+  const [file, setFile] = useState<File | null>(null)
   const [imagePreview, setImagePreview] = useState<string | null>(null)
   const { closeModal, isOpen } = useModal("CreateServer");
-  const form = useForm({
+  const profileId = useProfileStore((state) => state.profile?.id);
+  const [createServer, { loading, error }] = useMutation<CreateServerMutation, CreateServerMutationVariables>(CREATE_SERVER)
+  const { values, reset, validate, getInputProps, errors, onSubmit: onSubmitForm } = useForm({
     initialValues: {
       name: "",
     },
@@ -20,7 +26,23 @@ const CreateServerModal = () => {
   })
 
   const onSubmit = () => {
-    if (!form.validate()) return
+    if (!validate()) return;
+    createServer({
+      variables: {
+        createServerInput: {
+          name: values.name,
+          profileId: profileId
+        },
+        file
+      },
+      onCompleted: () => {
+        setImagePreview(null);
+        setFile(null);
+        closeModal();
+        reset();
+      },
+      refetchQueries: ['GetServers']
+    })
   }
 
   const handleDropzoneChange: DropzoneProps["onDrop"] = (files) => {
@@ -40,7 +62,7 @@ const CreateServerModal = () => {
         Give your server a personality with a name and an image. You can always
         change it later.
       </Text>
-      <form onSubmit={form.onSubmit(() => onSubmit())}>
+      <form onSubmit={onSubmitForm(() => onSubmit())}>
         <Stack>
           <Flex justify="center" align="center" direction={"column"}>
             {!imagePreview && (
@@ -74,9 +96,9 @@ const CreateServerModal = () => {
                     <Text size="sm" c="dimmed" inline>
                       Upload a server icon
                     </Text>
-                    {/* {error?.message && !file && (
+                    {error?.message && !file && (
                       <Text c="red">{error?.message}</Text>
-                    )} */}
+                    )}
                   </Stack>
                 </Flex>
               </Dropzone>
@@ -117,11 +139,12 @@ const CreateServerModal = () => {
           <TextInput
             label="Server name"
             placeholder="Enter server name"
-            {...form.getInputProps("name")}
-            error={form.errors.name}
+            {...getInputProps("name")}
+            error={errors.name}
           />
           <Button
-            // disabled={!!form.errors.name || loading}
+            disabled={!!errors.name || loading}
+            loading={loading}
             w={"100%"}
             type="submit"
             variant="gradient"
