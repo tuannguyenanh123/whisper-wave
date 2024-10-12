@@ -31,7 +31,7 @@ const CreateServerModal = () => {
       variables: {
         createServerInput: {
           name: values.name,
-          profileId: profileId
+          profileId: profileId as number
         },
         file
       },
